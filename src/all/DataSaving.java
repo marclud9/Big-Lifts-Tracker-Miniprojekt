@@ -122,7 +122,7 @@ public class DataSaving implements Serializable{
                             	j = 0;
 				Data[i][j] = currLine.substring(0, 11);  //bei [X][0] steht jeweils das Datum
 				j++;
-				Data[i][j] = currLine.substring(11, gap - 2);  //bei [X][1] steht je das zugehörige Gewicht
+				Data[i][j] = currLine.substring(11, gap - 1);  //bei [X][1] steht je das zugehörige Gewicht
 				i ++;
                             	currLine = br.readLine();
                             }

@@ -16,7 +16,6 @@ import java.awt.Component;
 import java.awt.Font;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
@@ -24,13 +23,10 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.JFrame;
 import javax.swing.JButton;
-
 import javafx.scene.*;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
-
 import java.awt.event.*;
 import java.util.ArrayList;
 
@@ -46,7 +42,7 @@ public class MainWindow implements ActionListener, ItemListener {
     private DataSaving saveData = new DataSaving();
     private ArrayList weightsLabel = new ArrayList();
     private ArrayList repLabel = new ArrayList();
-    private Font changedFont = new Font("Dialog", Font.PLAIN, 17);
+    private final Font changedFont = new Font("Dialog", Font.PLAIN, 17);
 
     public MainWindow() {
 
@@ -64,32 +60,48 @@ public class MainWindow implements ActionListener, ItemListener {
     }
         
     
+    @Override
     public void itemStateChanged(ItemEvent e){ //JComboBox Auswahl
+       //Anpassen der letzten Werte
+       String[][] tempData = saveData.readHistoryData(chooseExercise.getSelectedItem().toString());
+       JLabel tempweight;
+       JLabel tempreps;
+       String tempOneRepWeight = "";
+       String tempOneRepReps = "";
+       for(int i = 0; i < tempData.length; i++){
+           tempweight = (JLabel) weightsLabel.get(i);
+           tempreps = (JLabel) repLabel.get(i);
+           tempweight.setText(tempData[i][0]);
+           tempreps.setText(tempData[i][1]);
+           tempOneRepWeight = tempweight.getText();
+           tempOneRepReps = tempreps.getText();
+       }
+       
+       //Anzeigen des richtigen One-Rep-Maxs 
+       if (tempOneRepReps != null && tempOneRepWeight != null && tempOneRepReps.isEmpty() == false && tempOneRepWeight.isEmpty() == false){
+           oneRep.setText("Estimated One-Rep-Max: " + calc.returnOneRepMax(Double.parseDouble(tempOneRepWeight), Double.parseDouble(tempOneRepReps)).toString());
+           oneRep.setFont(changedFont);
+       } else{
+           oneRep.setText("Estimated One-Rep-Max: -");
+           oneRep.setFont(changedFont);
+       }
+      
         //Anpassen des Diagramms
        String[][] temp = saveData.readDiagramData(chooseExercise.getSelectedItem().toString());
        if (temp != null){
         Platform.runLater(new Runnable(){
            public void run(){
             if(temp != null){
-                chart.addToSeries(temp);
+                chart.getChart().getData().clear();
+                chart.addToSeries(temp, chooseExercise.getSelectedItem().toString());
             }
            }
         });  
        }
        
-       //Anpassen der letzten Werte
-       String[][] tempData = saveData.readHistoryData(chooseExercise.getSelectedItem().toString());
-       JLabel tempweight;
-       JLabel tempreps;
-       for(int i = 0; i < tempData.length; i++){
-           tempweight = (JLabel) weightsLabel.get(i);
-           tempreps = (JLabel) repLabel.get(i);
-           tempweight.setText(tempData[i][0]);
-           tempreps.setText(tempData[i][1]);
-       }
-
     }
 
+    @Override
     public void actionPerformed(ActionEvent e){
        String weightIn = inputWeight.getText();
        String repsIn = inputReps.getText(); 
@@ -112,19 +124,19 @@ public class MainWindow implements ActionListener, ItemListener {
        String[][] currentWork = {{weightIn, date.toString()}};
        Platform.runLater(new Runnable(){
            public void run(){
-               chart.addToSeries(currentWork);
+               chart.addToSeries(currentWork, chooseExercise.getSelectedItem().toString());
            }
        }); 
     }
 
     public void buildMainWindow() {
-        JFrame mainFrame = new JFrame();
         JPanel mainWindow = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         JDialog programmName = new JDialog();
         programmName.setTitle("Fitness-Tracking");
         programmName.setSize(1280, 720);
         programmName.add(mainWindow);
+        programmName.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         programmName.setVisible(true);
         
         DateTimeFormatter format = DateTimeFormatter.ofPattern("dd.MM.uuuu");
@@ -289,15 +301,11 @@ public class MainWindow implements ActionListener, ItemListener {
         JPanel fxWrapper = new JPanel();
         fxWrapper.add(fxp);
         mainWindow.add(fxWrapper, gbc);
-        /* mainFrame.add(mainWindow);
-        mainFrame.setVisible(true);
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); */
         Platform.runLater(new Runnable() {
             public void run() {
                 initFX(fxp);
             }
         });
-
     }
 
     public String getExercise() {
@@ -309,5 +317,4 @@ public class MainWindow implements ActionListener, ItemListener {
         MainWindow test = new MainWindow();
         test.buildMainWindow();
     }
-
 }
