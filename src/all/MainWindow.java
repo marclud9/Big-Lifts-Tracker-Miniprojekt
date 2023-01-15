@@ -102,7 +102,7 @@ public class MainWindow implements ActionListener, ItemListener {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e){
+    public void actionPerformed(ActionEvent e){  //Bestätigen-Button nutzen
        String weightIn = inputWeight.getText();
        String repsIn = inputReps.getText(); 
        //Anpassen One-Rep-Max
@@ -121,12 +121,17 @@ public class MainWindow implements ActionListener, ItemListener {
            tempreps.setText(currData[i][1]);
         }
        //Anpassen des Diagrams
-       String[][] currentWork = {{weightIn, date.toString()}};
-       Platform.runLater(new Runnable(){
+       String[][] temp = saveData.readDiagramData(chooseExercise.getSelectedItem().toString());
+       if (temp != null){
+        Platform.runLater(new Runnable(){
            public void run(){
-               chart.addToSeries(currentWork, chooseExercise.getSelectedItem().toString());
+            if(temp != null){
+                chart.getChart().getData().clear();
+                chart.addToSeries(temp, chooseExercise.getSelectedItem().toString());
+            }
            }
-       }); 
+        });  
+       }
     }
 
     public void buildMainWindow() {

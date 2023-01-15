@@ -28,16 +28,16 @@ import javafx.stage.Stage;
 import java.lang.NumberFormatException;
 
 public class ProgressChart extends Application{
-	 private static final CategoryAxis xAxis = new CategoryAxis();
+	 private static final NumberAxis xAxis = new NumberAxis();
 	 private static final NumberAxis yAxis = new NumberAxis();
-	 private static LineChart<String,Number> lineChart = new LineChart<>(xAxis,yAxis);
+	 private static LineChart<Number,Number> lineChart = new LineChart<>(xAxis,yAxis);
 	
 	 public ProgressChart() {
 		 initChart();
 	 }
 	 
 	private static void initChart() {
-		xAxis.setLabel("Monat");
+		xAxis.setLabel("Vorangegangenes Training in Nummern");
 		yAxis.setLabel("Gewicht");
                 yAxis.setAutoRanging(false);
                 yAxis.setLowerBound(0);
@@ -63,21 +63,21 @@ public class ProgressChart extends Application{
         }
         
 	public void addToSeries(String[][] exerciseData, String exerciseName) {
-            XYChart.Series<String, Number> seriesData = new XYChart.Series<>();
+            XYChart.Series<Number, Number> seriesData = new XYChart.Series<>();
             int weight;
-            for (String[] currData : exerciseData) {
-                if(checkForInt(currData[0]) == true && currData[0] != null){  //Wenn readHistory aufgerufen wurde und Gewicht und Reps übergeben wurden
-                    weight = Integer.parseInt(currData[0]);
-                    seriesData.getData().add(new XYChart.Data<>(currData[1], weight));
-                } else if (currData[0] != null){  //wenn readDiagram aufgerufen wurde und Datum und Fewicht übergeben wurden
-                    weight = Integer.parseInt(currData[1]);
-                    seriesData.getData().add(new XYChart.Data<>(currData[0], weight));
+            for (int i = 0; i < exerciseData.length; i++) {
+                if(checkForInt(exerciseData[i][0]) == true && exerciseData[i][0] != null){  //Wenn readHistory aufgerufen wurde und Gewicht und Reps übergeben wurden
+                    weight = Integer.parseInt(exerciseData[i][0]);
+                    seriesData.getData().add(new XYChart.Data<Number, Number>(i, weight));
+                } else if (exerciseData[i][0] != null){  //wenn readDiagram aufgerufen wurde und Datum und Gewicht übergeben wurden
+                    weight = Integer.parseInt(exerciseData[i][1]);
+                    seriesData.getData().add(new XYChart.Data<Number, Number>(i, weight));
                 }
             }
             seriesData.setName(exerciseName);
             lineChart.getData().add(seriesData);
         }
-	public LineChart<String, Number> getChart() {
+	public LineChart<Number, Number> getChart() {
 		return lineChart;
 	}	
 	
