@@ -42,6 +42,7 @@ public class MainWindow implements ActionListener, ItemListener {
     private DataSaving saveData = new DataSaving();
     private ArrayList weightsLabel = new ArrayList();
     private ArrayList repLabel = new ArrayList();
+    private ArrayList dateLabelList = new ArrayList();
     private final Font changedFont = new Font("Dialog", Font.PLAIN, 17);
 
     public MainWindow() {
@@ -64,13 +65,17 @@ public class MainWindow implements ActionListener, ItemListener {
     public void itemStateChanged(ItemEvent e){ //JComboBox Auswahl
        //Anpassen der letzten Werte
        String[][] tempData = saveData.readHistoryData(chooseExercise.getSelectedItem().toString());
+       String[][] temp = saveData.readDiagramData(chooseExercise.getSelectedItem().toString());
        JLabel tempweight;
        JLabel tempreps;
+       JLabel tempdate;
        String tempOneRepWeight = "";
        String tempOneRepReps = "";
        for(int i = 0; i < tempData.length; i++){
            tempweight = (JLabel) weightsLabel.get(i);
            tempreps = (JLabel) repLabel.get(i);
+           tempdate = (JLabel) dateLabelList.get(i);
+           tempdate.setText(temp[i][0]);
            tempweight.setText(tempData[i][0]);
            tempreps.setText(tempData[i][1]);
            tempOneRepWeight = tempweight.getText();
@@ -87,7 +92,7 @@ public class MainWindow implements ActionListener, ItemListener {
        }
       
         //Anpassen des Diagramms
-       String[][] temp = saveData.readDiagramData(chooseExercise.getSelectedItem().toString());
+       
        if (temp != null){
         Platform.runLater(new Runnable(){
            public void run(){
@@ -112,16 +117,20 @@ public class MainWindow implements ActionListener, ItemListener {
        //Anpassen der letzten Werte
        saveData.writeData(date.toString(), weightIn, repsIn, chooseExercise.getSelectedItem().toString());
        String[][] currData = saveData.readHistoryData(chooseExercise.getSelectedItem().toString());
+       String[][] temp = saveData.readDiagramData(chooseExercise.getSelectedItem().toString());
        JLabel tempweight;
        JLabel tempreps;
+       JLabel tempdate;
        for(int i = 0; i < currData.length; i++){     
            tempweight = (JLabel) weightsLabel.get(i);
            tempreps = (JLabel) repLabel.get(i);
+           tempdate = (JLabel) dateLabelList.get(i);
+           tempdate.setText(temp[i][0]);
            tempweight.setText(currData[i][0]);
            tempreps.setText(currData[i][1]);
         }
        //Anpassen des Diagrams
-       String[][] temp = saveData.readDiagramData(chooseExercise.getSelectedItem().toString());
+       
        if (temp != null){
         Platform.runLater(new Runnable(){
            public void run(){
@@ -204,93 +213,141 @@ public class MainWindow implements ActionListener, ItemListener {
         lastSeven.setAlignmentX(Component.CENTER_ALIGNMENT);
         lastValueContainer.add(lastSeven);
         JPanel lastValues = new JPanel();
-        JPanel weights = new JPanel();
-        JPanel reps = new JPanel();
+        JPanel weightsPanel = new JPanel();
+        JPanel repsPanel = new JPanel();
+        JPanel datePanel = new JPanel();
+        datePanel.setLayout(new BoxLayout(datePanel, BoxLayout.Y_AXIS));
         lastValues.setLayout(new BoxLayout(lastValues, BoxLayout.X_AXIS));
-        weights.setLayout(new BoxLayout(weights, BoxLayout.Y_AXIS));
-        reps.setLayout(new BoxLayout(reps, BoxLayout.Y_AXIS));
+        weightsPanel.setLayout(new BoxLayout(weightsPanel, BoxLayout.Y_AXIS));
+        repsPanel.setLayout(new BoxLayout(repsPanel, BoxLayout.Y_AXIS));
         Font latestData = new Font("Dialog", Font.PLAIN, 15);
+        
+        //Block, in dem die Gewichte angezeigt werden 
         JLabel weightLabel = new JLabel("Gewicht");
         weightLabel.setFont(changedFont);
-        JLabel wone = new JLabel(" N/A ");
-        wone.setFont(latestData);
-        JLabel wtwo = new JLabel(" N/A ");
-        wtwo.setFont(latestData);
-        JLabel wthree = new JLabel(" N/A ");
-        wthree.setFont(latestData);
-        JLabel wfour = new JLabel(" N/A ");
-        wfour.setFont(latestData);
-        JLabel wfive = new JLabel(" N/A ");
-        wfive.setFont(latestData);
-        JLabel wsix = new JLabel(" N/A ");
-        wsix.setFont(latestData);
-        JLabel wseven = new JLabel(" N/A ");
-        wseven.setFont(latestData);
-        weightsLabel.add(wone);
-        weightsLabel.add(wtwo);
-        weightsLabel.add(wthree);
-        weightsLabel.add(wfour);
-        weightsLabel.add(wfive);
-        weightsLabel.add(wsix);
-        weightsLabel.add(wseven);
-        weights.add(weightLabel);
-        weights.add(Box.createRigidArea(new Dimension(0, 10)));
-        weights.add(wone);
-        weights.add(Box.createRigidArea(new Dimension(0, 10)));
-        weights.add(wtwo);
-        weights.add(Box.createRigidArea(new Dimension(0, 10)));
-        weights.add(wthree);
-        weights.add(Box.createRigidArea(new Dimension(0, 10)));
-        weights.add(wfour);
-        weights.add(Box.createRigidArea(new Dimension(0, 10)));
-        weights.add(wfive);
-        weights.add(Box.createRigidArea(new Dimension(0, 10)));
-        weights.add(wsix);
-        weights.add(Box.createRigidArea(new Dimension(0, 10)));
-        weights.add(wseven);
-
+        JLabel weightsOne = new JLabel(" - ");
+        weightsOne.setFont(latestData);
+        JLabel weightsTwo = new JLabel(" - ");
+        weightsTwo.setFont(latestData);
+        JLabel weightsThree = new JLabel(" - ");
+        weightsThree.setFont(latestData);
+        JLabel weightsFour = new JLabel(" - ");
+        weightsFour.setFont(latestData);
+        JLabel weightsFive = new JLabel(" - ");
+        weightsFive.setFont(latestData);
+        JLabel weightsSix = new JLabel(" - ");
+        weightsSix.setFont(latestData);
+        JLabel weightsSeven = new JLabel(" - ");
+        weightsSeven.setFont(latestData);
+        weightsLabel.add(weightsSeven);
+        weightsLabel.add(weightsSix);
+        weightsLabel.add(weightsFive);
+        weightsLabel.add(weightsFour);
+        weightsLabel.add(weightsThree);
+        weightsLabel.add(weightsTwo);
+        weightsLabel.add(weightsOne);
+        weightsPanel.add(weightLabel);
+        weightsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        weightsPanel.add(weightsOne);
+        weightsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        weightsPanel.add(weightsTwo);
+        weightsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        weightsPanel.add(weightsThree);
+        weightsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        weightsPanel.add(weightsFour);
+        weightsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        weightsPanel.add(weightsFive);
+        weightsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        weightsPanel.add(weightsSix);
+        weightsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        weightsPanel.add(weightsSeven);
+        
+        //Block, in dem die Anzahl an Wiederholungen angezeigt wird
         JLabel repsLabel = new JLabel("Reps");
         repsLabel.setFont(changedFont);
-        JLabel rone = new JLabel(" N/A ");
-        rone.setFont(latestData);
-        JLabel rtwo = new JLabel(" N/A ");
-        rtwo.setFont(latestData);
-        JLabel rthree = new JLabel(" N/A ");
-        rthree.setFont(latestData);
-        JLabel rfour = new JLabel(" N/A ");
-        rfour.setFont(latestData);
-        JLabel rfive = new JLabel(" N/A ");
-        rfive.setFont(latestData);
-        JLabel rsix = new JLabel(" N/A ");
-        rsix.setFont(latestData);
-        JLabel rseven = new JLabel(" N/A ");
-        rseven.setFont(latestData);
-        repLabel.add(rone);
-        repLabel.add(rtwo);
-        repLabel.add(rthree);
-        repLabel.add(rfour);
-        repLabel.add(rfive);
-        repLabel.add(rsix);
-        repLabel.add(rseven);
-        reps.add(repsLabel);
-        reps.add(Box.createRigidArea(new Dimension(0, 10)));
-        reps.add(rone);
-        reps.add(Box.createRigidArea(new Dimension(0, 10)));
-        reps.add(rtwo);
-        reps.add(Box.createRigidArea(new Dimension(0, 10)));
-        reps.add(rthree);
-        reps.add(Box.createRigidArea(new Dimension(0, 10)));
-        reps.add(rfour);
-        reps.add(Box.createRigidArea(new Dimension(0, 10)));
-        reps.add(rfive);
-        reps.add(Box.createRigidArea(new Dimension(0, 10)));
-        reps.add(rsix);
-        reps.add(Box.createRigidArea(new Dimension(0, 10)));
-        reps.add(rseven);
-
-        lastValues.add(weights);
-        lastValues.add(Box.createRigidArea(new Dimension(50, 0)));
-        lastValues.add(reps);
+        JLabel repsOne = new JLabel(" - ");
+        repsOne.setFont(latestData);
+        JLabel repsTwo = new JLabel(" - ");
+        repsTwo.setFont(latestData);
+        JLabel repsThree = new JLabel(" - ");
+        repsThree.setFont(latestData);
+        JLabel repsFour = new JLabel(" - ");
+        repsFour.setFont(latestData);
+        JLabel repsFive = new JLabel(" - ");
+        repsFive.setFont(latestData);
+        JLabel repsSix = new JLabel(" - ");
+        repsSix.setFont(latestData);
+        JLabel repsSeven = new JLabel(" - ");
+        repsSeven.setFont(latestData);
+        repLabel.add(repsSeven);
+        repLabel.add(repsSix);
+        repLabel.add(repsFive);
+        repLabel.add(repsFour);
+        repLabel.add(repsThree);
+        repLabel.add(repsTwo);
+        repLabel.add(repsOne);
+        repsPanel.add(repsLabel);
+        repsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        repsPanel.add(repsOne);
+        repsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        repsPanel.add(repsTwo);
+        repsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        repsPanel.add(repsThree);
+        repsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        repsPanel.add(repsFour);
+        repsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        repsPanel.add(repsFive);
+        repsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        repsPanel.add(repsSix);
+        repsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        repsPanel.add(repsSeven);
+        
+        //Block, in dem das zugehörige Datum angezeigt wird
+        JLabel dateLabel = new JLabel("Datum");
+        dateLabel.setFont(changedFont);
+        JLabel dateOne = new JLabel(" - ");
+        dateOne.setFont(latestData);
+        JLabel dateTwo = new JLabel(" - ");
+        dateTwo.setFont(latestData);
+        JLabel dateThree = new JLabel(" - ");
+        dateThree.setFont(latestData);
+        JLabel dateFour = new JLabel(" - ");
+        dateFour.setFont(latestData);
+        JLabel dateFive = new JLabel(" - ");
+        dateFive.setFont(latestData);
+        JLabel dateSix = new JLabel(" - ");
+        dateSix.setFont(latestData);
+        JLabel dateSeven = new JLabel(" - ");
+        dateSeven.setFont(latestData);
+        dateLabelList.add(dateSeven);
+        dateLabelList.add(dateSix);
+        dateLabelList.add(dateFive);
+        dateLabelList.add(dateFour);
+        dateLabelList.add(dateThree);
+        dateLabelList.add(dateTwo);
+        dateLabelList.add(dateOne);
+        datePanel.add(dateLabel);
+        datePanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        datePanel.add(dateOne);
+        datePanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        datePanel.add(dateTwo);
+        datePanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        datePanel.add(dateThree);
+        datePanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        datePanel.add(dateFour);
+        datePanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        datePanel.add(dateFive);
+        datePanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        datePanel.add(dateSix);
+        datePanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        datePanel.add(dateSeven);
+        
+        //Zusammenfügen des Blocks, der Datum, Gewicht und Wiederholungen anzegeit
+        lastValues.add(datePanel);
+        lastValues.add(Box.createRigidArea(new Dimension(30, 0)));
+        lastValues.add(weightsPanel);
+        lastValues.add(Box.createRigidArea(new Dimension(30, 0)));
+        lastValues.add(repsPanel);
 
         lastValueContainer.add(Box.createRigidArea(new Dimension(0, 10)));
         lastValueContainer.add(lastValues);

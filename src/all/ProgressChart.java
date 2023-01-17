@@ -37,11 +37,15 @@ public class ProgressChart extends Application{
 	 }
 	 
 	private static void initChart() {
-		xAxis.setLabel("Vorangegangenes Training in Nummern");
+		xAxis.setLabel("Verlauf der letzten Trainings");
 		yAxis.setLabel("Gewicht");
                 yAxis.setAutoRanging(false);
+                xAxis.setAutoRanging(false);
                 yAxis.setLowerBound(0);
                 yAxis.setUpperBound(150);
+                xAxis.setLowerBound(0);
+                xAxis.setUpperBound(6);
+                xAxis.setTickUnit(1);
 		lineChart.setTitle("Progression");
 	}
 	
