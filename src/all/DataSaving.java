@@ -19,10 +19,7 @@ public class DataSaving implements Serializable{
 		
 	}
 	
-	/* Daten per FileWriter/ BufferedWriter ins File eintragen, dann ein Word als EoF festlegen
-	 * Dereferenzieren der Daten mit Substring, um einzelne Werte zu erlangen
-	 *  */
-	
+	//Methode, um in das jeweilige File zu schreiben. Dabei wird die Anzahl an Wdh. mit einem : getrennt, um für das Auslesen der Daten die Position bestimmen zu können
 	public void writeData(String date, String weight, String reps, String exercise) {
             String text = date + " " + weight + " :" + reps;
 		switch(exercise) {
