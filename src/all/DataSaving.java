@@ -24,7 +24,7 @@ public class DataSaving implements Serializable{
 	 *  */
 	
 	public void writeData(String date, String weight, String reps, String exercise) {
-            String text = date + " " + weight + " ." + reps;
+            String text = date + " " + weight + " :" + reps;
 		switch(exercise) {
 		case "Bankdrücken": 
                     saving = new File("dataBankdrücken.txt");
@@ -114,7 +114,7 @@ public class DataSaving implements Serializable{
 			String currLine = br.readLine();
                         int gap = 0;
                         if (currLine != null)
-                            gap = currLine.indexOf(".");
+                            gap = currLine.indexOf(":");
 			int i = 0;
 			int j;
                         if (gap != 0){
@@ -154,19 +154,17 @@ public class DataSaving implements Serializable{
 		try(FileReader fr = new FileReader(saving); BufferedReader br = new BufferedReader(fr)){
 			String currLine = br.readLine();
                         int gap = 0;
-                        if(currLine != null){
-                            gap = currLine.indexOf(".");
-                        }
 			int i = 0;
 			int j;
-                        if (gap != 0){
-                            while (currLine != null) {
-                            	j = 0;
-                            	Data[i][j] = currLine.substring(11, gap);  //bei [X][0] steht jeweils das Gewicht
-				j++;
-				Data[i][j] = currLine.substring(gap + 1);  //bei [X][1] steht je die zugehörige Zahl an Wiederholungen
-                                i ++;
-				currLine = br.readLine();
+                        while (currLine != null) {
+                            gap = currLine.indexOf(":");
+                            if(gap != 0){
+                              j = 0;
+                              Data[i][j] = currLine.substring(11, gap);  //bei [X][0] steht jeweils das Gewicht
+                              j++;
+                              Data[i][j] = currLine.substring(gap + 1);  //bei [X][1] steht je die zugehörige Zahl an Wiederholungen
+                              i ++;
+                              currLine = br.readLine();
                             }
                         }
 			fr.close();
