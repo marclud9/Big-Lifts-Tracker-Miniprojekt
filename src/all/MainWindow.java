@@ -51,12 +51,10 @@ public class MainWindow implements ActionListener, ItemListener {
 	
     //Die private statische Methode ist notwendig, um die FX ProgressChart in die Swing-Gui einbinden zu können
     private static void initFX(JFXPanel fxpanel) {
-        Platform.runLater(new Runnable() {
-            public void run() {
-                chart = new ProgressChart();
-                Scene scene = new Scene(chart.getChart(), 700, 500);
-                fxpanel.setScene(scene);
-            }
+        Platform.runLater(() -> {
+            chart = new ProgressChart();
+            Scene scene = new Scene(chart.getChart(), 700, 500);
+            fxpanel.setScene(scene);
         });
     }
         
@@ -64,8 +62,7 @@ public class MainWindow implements ActionListener, ItemListener {
     @Override
     public void itemStateChanged(ItemEvent e){ //JComboBox Auswahl
        //Anpassen der letzten Werte
-       String[][] tempData = saveData.readHistoryData(chooseExercise.getSelectedItem().toString());
-       String[][] temp = saveData.readDiagramData(chooseExercise.getSelectedItem().toString());
+       String[][] tempData = saveData.readData(chooseExercise.getSelectedItem().toString());
        JLabel tempweight;
        JLabel tempreps;
        JLabel tempdate;
@@ -75,9 +72,9 @@ public class MainWindow implements ActionListener, ItemListener {
            tempweight = (JLabel) weightsLabel.get(i);
            tempreps = (JLabel) repLabel.get(i);
            tempdate = (JLabel) dateLabelList.get(i);
-           tempdate.setText(temp[i][0]);
-           tempweight.setText(tempData[i][0]);
-           tempreps.setText(tempData[i][1]);
+           tempdate.setText(tempData[i][0]);
+           tempweight.setText(tempData[i][1]);
+           tempreps.setText(tempData[i][2]);
            tempOneRepWeight = tempweight.getText();
            tempOneRepReps = tempreps.getText();
        }
@@ -92,17 +89,10 @@ public class MainWindow implements ActionListener, ItemListener {
        }
       
         //Anpassen des Diagramms
-       
-       if (temp != null){
-        Platform.runLater(new Runnable(){
-           public void run(){
-            if(temp != null){
-                chart.getChart().getData().clear();
-                chart.addToSeries(temp, chooseExercise.getSelectedItem().toString());
-            }
-           }
+        Platform.runLater(() -> {
+            chart.getChart().getData().clear();
+            chart.addToSeries(tempData, chooseExercise.getSelectedItem().toString());     
         });  
-       }
        
     }
 
@@ -116,31 +106,25 @@ public class MainWindow implements ActionListener, ItemListener {
        LocalDate date = LocalDate.now();
        //Anpassen der letzten Werte
        saveData.writeData(date.toString(), weightIn, repsIn, chooseExercise.getSelectedItem().toString());
-       String[][] currData = saveData.readHistoryData(chooseExercise.getSelectedItem().toString());
-       String[][] temp = saveData.readDiagramData(chooseExercise.getSelectedItem().toString());
+       String[][] temp = saveData.readData(chooseExercise.getSelectedItem().toString());
        JLabel tempweight;
        JLabel tempreps;
        JLabel tempdate;
-       for(int i = 0; i < currData.length; i++){     
+       for(int i = 0; i < temp.length; i++){     
            tempweight = (JLabel) weightsLabel.get(i);
            tempreps = (JLabel) repLabel.get(i);
            tempdate = (JLabel) dateLabelList.get(i);
            tempdate.setText(temp[i][0]);
-           tempweight.setText(currData[i][0]);
-           tempreps.setText(currData[i][1]);
+           tempweight.setText(temp[i][1]);
+           tempreps.setText(temp[i][2]);
         }
        //Anpassen des Diagrams
-       
-       if (temp != null){
-        Platform.runLater(new Runnable(){
-           public void run(){
-            if(temp != null){
-                chart.getChart().getData().clear();
-                chart.addToSeries(temp, chooseExercise.getSelectedItem().toString());
-            }
-           }
+        Platform.runLater(() -> {
+            chart.getChart().getData().clear();
+            chart.addToSeries(temp, chooseExercise.getSelectedItem().toString());
+            
         });  
-       }
+       
     }
 
     public void buildMainWindow() {
@@ -363,10 +347,8 @@ public class MainWindow implements ActionListener, ItemListener {
         JPanel fxWrapper = new JPanel();
         fxWrapper.add(fxp);
         mainWindow.add(fxWrapper, gbc);
-        Platform.runLater(new Runnable() {
-            public void run() {
-                initFX(fxp);
-            }
+        Platform.runLater(() -> {
+            initFX(fxp);
         });
     }
 
