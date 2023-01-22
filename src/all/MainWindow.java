@@ -37,7 +37,7 @@ public class MainWindow implements ActionListener, ItemListener {
     private static JTextField inputReps = new JTextField(8);
     private static JLabel oneRep = new JLabel("Estimated One-Rep-Max: -");
     private static ProgressChart chart;
-    private final JFXPanel fxp = new JFXPanel();
+    private final JFXPanel fxp = new JFXPanel(); //für das Einbinden des FX-Graphen
     private static OneRepMaxCalc calc = new OneRepMaxCalc();
     private DataSaving saveData = new DataSaving();
     private ArrayList weightsLabel = new ArrayList();
@@ -78,7 +78,7 @@ public class MainWindow implements ActionListener, ItemListener {
            tempOneRepWeight = tempweight.getText();
            tempOneRepReps = tempreps.getText();
        }
-       
+ 
        //Anzeigen des richtigen One-Rep-Maxs 
        if (tempOneRepReps != null && tempOneRepWeight != null && tempOneRepReps.isEmpty() == false && tempOneRepWeight.isEmpty() == false){
            oneRep.setText("Estimated One-Rep-Max: " + calc.returnOneRepMax(Double.parseDouble(tempOneRepWeight), Double.parseDouble(tempOneRepReps)).toString());
@@ -136,13 +136,14 @@ public class MainWindow implements ActionListener, ItemListener {
         programmName.add(mainWindow);
         programmName.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         programmName.setVisible(true);
-        
+        //Hinzufügen des aktuellen Datums 
         DateTimeFormatter format = DateTimeFormatter.ofPattern("dd.MM.uuuu");
         LocalDate date = LocalDate.now();
         JLabel currentDate = new JLabel("Aktuelles Datum: " + format.format(date));
         currentDate.setFont(changedFont);
         mainWindow.add(currentDate);
         currentDate.setVisible(true);
+        //Hinzufügen der Auswahlmöglichkeiten 
         chooseExercise.addItem("Bankdrücken");
         chooseExercise.addItem("Kniebeuge");
         chooseExercise.addItem("Kreuzheben");
@@ -166,6 +167,7 @@ public class MainWindow implements ActionListener, ItemListener {
         acceptInput.setFont(changedFont);
         acceptInput.addActionListener(this);
         JPanel inputContainer = new JPanel();
+        //Festlegen der Positionen der Teile des Eingabebereichs
         inputContainer.setLayout(new BoxLayout(inputContainer, BoxLayout.X_AXIS));
         inputContainer.add(inputLetter);
         inputContainer.add(Box.createRigidArea(new Dimension(15, 0)));
@@ -274,18 +276,17 @@ public class MainWindow implements ActionListener, ItemListener {
         lastValues.add(weightsPanel);
         lastValues.add(Box.createRigidArea(new Dimension(30, 0)));
         lastValues.add(repsPanel);
-
         lastValueContainer.add(Box.createRigidArea(new Dimension(0, 10)));
         lastValueContainer.add(lastValues);
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.insets = new Insets(0, 20, 20, 20);
         mainWindow.add(lastValueContainer, gbc);
-
         gbc.gridx = 1;
         gbc.gridy = 3;
         gbc.weighty = 0.8;
         gbc.insets = new Insets(10, 10, 10, 10);
+        //Einbinden des FX-Graphen
         JPanel fxWrapper = new JPanel();
         fxWrapper.add(fxp);
         mainWindow.add(fxWrapper, gbc);

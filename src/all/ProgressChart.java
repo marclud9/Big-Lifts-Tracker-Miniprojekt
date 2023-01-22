@@ -35,16 +35,18 @@ public class ProgressChart extends Application{
 	 }
 	 
 	private static void initChart() {
-		xAxis.setLabel("Verlauf der letzten Trainings");
-		yAxis.setLabel("Gewicht");
-                yAxis.setAutoRanging(false);
-                xAxis.setAutoRanging(false);
-                yAxis.setLowerBound(0);
-                yAxis.setUpperBound(150);
-                xAxis.setLowerBound(0);
-                xAxis.setUpperBound(6);
-                xAxis.setTickUnit(1);
-		lineChart.setTitle("Progression");
+            //Parameter des Graphen festlegen
+            xAxis.setLabel("Verlauf der letzten Trainings"); //Achsenbeschriftung X-Achse
+            yAxis.setLabel("Gewicht"); //Achsenbeschriftung Y-Achse
+            yAxis.setAutoRanging(false);
+            xAxis.setAutoRanging(false);
+            //Grenzen der Achsen definieren
+            yAxis.setLowerBound(0);  
+            yAxis.setUpperBound(150);
+            xAxis.setLowerBound(0);
+            xAxis.setUpperBound(6);
+            xAxis.setTickUnit(1); //Abstand der Werte der X-Achse
+            lineChart.setTitle("Progression");
 	}
 	
          @Override
@@ -54,16 +56,16 @@ public class ProgressChart extends Application{
 		stage.show();
 	}
         
-	public void addToSeries(String[][] exerciseData, String exerciseName) {
+	public void addToSeries(String[][] exerciseData, String exerciseName) { //Funktion zum Hinzufügen neuer Daten
             XYChart.Series<Number, Number> seriesData = new XYChart.Series<>();
             float weight;
             if(exerciseData != null){
-                for (int i = 0; i < exerciseData.length; i++) {
-                    weight = Float.parseFloat(exerciseData[i][1]);
+                for (int i = 0; i < exerciseData.length; i++) { 
+                    weight = Float.parseFloat(exerciseData[i][1]);  //Den Array-Eintrag, der das Gewicht enthäl in einen Float umwandeln, um auch Dezimalzahlen zu unterstützem
                     seriesData.getData().add(new XYChart.Data<>(i, weight));
                 }
             }
-            seriesData.setName(exerciseName);
+            seriesData.setName(exerciseName); //Name der Datenserie auf den übergebenen Namen der Übung anpassen 
             lineChart.getData().add(seriesData);
         }
 	public LineChart<Number, Number> getChart() {
