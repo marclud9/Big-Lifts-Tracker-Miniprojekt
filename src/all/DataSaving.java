@@ -31,10 +31,10 @@ public class DataSaving {
 				lineCount++;
 				line = br.readLine();
 			}
-			if(lineCount >= 7) {
+			if(lineCount >= 7) {  //Schleife, die sicherstellt, dass nur die lezten sieben Werte in dem File gepeichert werden
 				br.reset();
 				String firstLine = br.readLine();
-				File temp = File.createTempFile("temp", null);
+				File temp = File.createTempFile("temp", null); //temporäres File, dass die letzten sechs Werte enthält
 				br.reset();
 				line = br.readLine();
 				while(line != null) {
@@ -74,7 +74,7 @@ public class DataSaving {
 		}
 	}
 	
-	public String[][] readData(String exercise) {
+	public String[][] readData(String exercise) { //Methode, die Daten aus dem jeweiligen File ausliest
             String[][] data = new String[7][3];
             switch(exercise) {
                 case "Bankdrücken" -> saving = new File("dataBankdrücken.txt");
